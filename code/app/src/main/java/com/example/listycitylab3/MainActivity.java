@@ -1,12 +1,16 @@
 package com.example.listycitylab3;
 
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.view.ViewDebug;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements AddCityFragment.AddCityDialogListener {
+public class MainActivity extends AppCompatActivity implements AddCityFragment.AddCityDialogListener, EditCityFragment.EditCityDialogListener {
     private ArrayList<City> dataList;
     private ListView cityList;
     private CityArrayAdapter cityAdapter;
@@ -14,6 +18,12 @@ public class MainActivity extends AppCompatActivity implements AddCityFragment.A
 
     public void addCity(City city) {
         cityAdapter.add(city);
+        cityAdapter.notifyDataSetChanged();
+    }
+
+    public void editCity(City city, String NewName, String NewProvince){
+        city.setName(NewName);
+        city.setProvince(NewProvince);
         cityAdapter.notifyDataSetChanged();
     }
 
@@ -38,5 +48,13 @@ public class MainActivity extends AppCompatActivity implements AddCityFragment.A
         fab.setOnClickListener(v -> {
             new AddCityFragment().show(getSupportFragmentManager(), "Add City");
         });
+
+        cityList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                new EditCityFragment(cityAdapter.getItem(i)).show(getSupportFragmentManager(), "Edit City");
+            }
+        });
+
     }
 }

@@ -7,24 +7,30 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ListView;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
-public class AddCityFragment extends DialogFragment {
-    interface AddCityDialogListener {
-        void addCity(City city);
+public class EditCityFragment extends DialogFragment {
+    City OriginalCity;
+    public EditCityFragment(City test) {
+        OriginalCity = test;
     }
 
-    private AddCityDialogListener listener;
+    interface EditCityDialogListener {
+        void editCity(City city, String NewName, String NewProvince);
+    }
+    private EditCityDialogListener listener;
 
     @Override
     public void onAttach(@NonNull Context context){
         super.onAttach(context);
-        if (context instanceof AddCityDialogListener){
-            listener = (AddCityDialogListener) context;
+        if (context instanceof EditCityDialogListener){
+            listener = (EditCityDialogListener) context;
         } else {
-            throw new RuntimeException(context + " must implement AddCityDialogListener");
+            throw new RuntimeException(context + " must implement EditCityDialogListener");
         }
     }
 
@@ -36,12 +42,12 @@ public class AddCityFragment extends DialogFragment {
         EditText editProvinceName = view.findViewById(R.id.edit_text_province_text);
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         return builder.setView(view)
-                .setTitle("Add a city")
+                .setTitle("Edit the city")
                 .setNegativeButton("Cancel", null)
-                .setPositiveButton("Add", (dialog, which) -> {
+                .setPositiveButton("Confirm", (dialog, which) -> {
                     String cityName = editCityName.getText().toString();
                     String provinceName = editProvinceName.getText().toString();
-                    listener.addCity(new City(cityName, provinceName));
+                    listener.editCity(OriginalCity,cityName, provinceName);
         }).create();
     }
 }
